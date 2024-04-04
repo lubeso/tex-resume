@@ -1,0 +1,397 @@
+\documentclass[10.5pt,letterpaper]{article}
+
+\usepackage{enumitem}
+\usepackage[fixed,pro]{fontawesome5}
+\usepackage[T1]{fontenc}
+\usepackage{fontspec}
+\usepackage[margin=0.5in]{geometry}
+\usepackage{graphicx}
+\usepackage[hidelinks]{hyperref}
+\usepackage{lipsum}
+\usepackage{marvosym}
+\usepackage{phonenumbers}
+\usepackage{setspace}
+\usepackage[x11names]{xcolor} % Must come before loading the `svg` package
+\usepackage{svg}
+\usepackage{tabularx}
+\usepackage{titlesec}
+\usepackage{url}
+
+\graphicspath{{../assets/logos}{../assets/flags}}
+\svgpath{{../assets/logos}{../assets/flags}}
+
+\setsansfont{Helvetica Neue}
+\setmonofont[Scale=0.9]{Menlo}
+\renewcommand{\familydefault}{\sfdefault}
+
+\singlespacing
+
+\titleformat{\section}[block]{\normalfont\Large\bfseries\color{DodgerBlue4}}{\thesection}{1em}{}
+\titlespacing*{\section}{0ex}{0ex}{-0.25ex}
+
+\titleformat{\subsection}[block]{\normalfont\bfseries}{\thesection}{1em}{}
+\titlespacing*{\subsection}{0ex}{0ex}{0ex}
+
+%%% Header components
+\newcommand{\card}{%
+    \begin{minipage}[c][0.105\textheight][c]{0.675\textwidth}
+	\doublespacing \centering \large
+	\begin{tabularx}{0.8\textwidth}{*{3}{>{\centering\arraybackslash}X}}
+	    \multicolumn{3}{c}{%
+		\Huge \bfseries \color{DodgerBlue4}
+		Luis Becerra Solis
+	    } \\
+	    \faGlobe[regular]~\href{https://www.lubeso.dev}{Website} &
+	    \faGithub~\href{https://github.com/lubeso}{GitHub}   &
+	    \faLinkedin~\href{https://www.linkedin.com/in/lubeso}{LinkedIn} \\
+	\end{tabularx}
+    \end{minipage}
+}
+
+\edef\addressstreet{%
+	\directlua{tex.sprint(os.getenv('ADDRESS_STREET'))}%
+}
+\edef\addressunit{%
+	\directlua{tex.sprint(os.getenv('ADDRESS_UNIT'))}%
+}
+\edef\addresscity{%
+	\directlua{tex.sprint(os.getenv('ADDRESS_CITY'))}%
+}
+\edef\addressstate{%
+	\directlua{tex.sprint(os.getenv('ADDRESS_STATE'))}%
+}
+\edef\addresszipcode{%
+	\directlua{tex.sprint(os.getenv('ADDRESS_ZIP_CODE'))}%
+}
+
+\newsavebox{\address}
+\savebox{\address}{%
+	\setmainfont{\sfdefault}
+	\begin{minipage}[t]{0.225\textwidth}
+		\addressstreet \\
+		Unit \addressunit \\
+		\addresscity, \addressstate~\addresszipcode
+	\end{minipage}
+}
+
+\edef\contactemail{%
+	\directlua{tex.sprint(os.getenv('CONTACT_EMAIL'))}%
+}
+\edef\contactphone{%
+	\directlua{tex.sprint(os.getenv('CONTACT_PHONE'))}%
+}
+
+\newcommand{\contact}{%
+    \begin{minipage}[c]{0.275\textwidth}
+	\onehalfspacing
+        \faEnvelope[regular]~\texttt{\contactemail} \\
+        \faIcon[regular]{phone-alt}~\phonenumber[country=US]{\contactphone} \\
+	\faIcon[regular]{home-alt}~\usebox{\address}
+    \end{minipage}
+}
+
+\newcommand{\header}{%
+	\begin{minipage}[c][0.09\textheight][c]{0.95\textwidth}
+		\card
+		\hfill
+		\contact
+	\end{minipage}
+}
+
+%%% Footer
+\newcommand{\source}{%
+    \href{https://github.com/lubeso/tex-resume}{%
+        View the \textrm{\LaTeX} source code for this resume on GitHub.~\faExternalLink[regular]
+    }%
+}
+
+\newcommand{\footer}{%
+    \begin{minipage}[c][0.02\textheight][c]{0.95\textwidth}
+	\centering \footnotesize \color{gray}
+	\source \\
+    \end{minipage}
+}
+
+% Experience
+\newcommand{\experienceentry}[5]{%
+	\textbf{#1} & \textbf{#2} \\
+	\textcolor{gray}{\small\textit{#3}} & \textcolor{gray}{\small\textit{#4}} \\
+	#5
+}
+
+\newcommand{\educationentry}[5]{%
+	% Position #1
+	\textbf{#1} & \textbf{#2} \\
+	\textcolor{gray}{\small\textit{#3}} & \textcolor{gray}{\small\textit{#4}} \\
+	\multicolumn{2}{l}{%
+		\begin{minipage}[t]{0.95\linewidth}
+			#5
+		\end{minipage}
+	}
+}
+
+\newcommand{\educationentrycoursework}[2]{%
+	\centering \fontsize{9}{11}\selectfont
+	\subsection*{Coursework}
+	\begin{minipage}[t]{0.4175\textwidth}
+		\begin{itemize}[leftmargin=2ex,itemsep=-4ex]
+				#1
+		\end{itemize}
+	\end{minipage}
+	\hfill
+	\begin{minipage}[t]{0.5175\textwidth}
+		\begin{itemize}[leftmargin=2ex,itemsep=-4ex]
+				#2
+		\end{itemize}
+	\end{minipage}
+}
+
+\newcommand{\education}{%
+	\section*{Education}
+	\begin{tabularx}{0.975\textwidth}{X r}
+		\educationentry{%
+			B.S. of Urban and Computer Science%
+		}{%
+			Sep 2018 - Jun 2022%
+		}{%
+			Massachusetts Institute of Technology (MIT)%
+		}{%
+			Cambridge, MA%
+		}{%
+			\educationentrycoursework{%
+			    \item Software Construction \\
+			    \item Data Structures \& Algorithms \\
+			    \item Probability \& Inference
+			}{
+			    \item Interactive Data Visualization \\
+			    \item Spatial Analysis \& Digital Cartography \\
+			    \item Modeling Urban Pedestrian Activity
+			}
+		} \\
+	\end{tabularx} \\
+}
+
+% Employment
+\newcommand{\employmententrydescription}[1]{%
+	\begin{itemize}[leftmargin=2ex,rightmargin=1ex,itemsep=-1ex]
+		#1
+	\end{itemize}
+}
+
+\newcommand{\employmententryresult}[1]{%
+	\multicolumn{2}{l}{
+		\fontsize{9}{11}\selectfont
+		\begin{minipage}[t]{0.95\linewidth}
+			#1
+		\end{minipage}
+	}
+}
+
+\newcommand{\employment}{%
+	\section*{Employment}
+	\begin{tabularx}{0.975\textwidth}{X r}
+		% Position #1
+		\experienceentry{%
+			DevOps Engineer%
+		}{%
+			Jun 2023 - Present%
+		}{%
+			Procter \& Gamble%
+		}{%
+			Boston, MA%
+		}{%
+			\employmententryresult{%
+				Developed a library to help teams instrument their applications with OpenTelemetry.
+			} \\
+			\employmententryresult{%
+				Developed automated integration tests for our central OpenTelemetry Collector.
+			} \\
+			\employmententryresult{%
+				Implemented an end-to-end observability pipeline using open source technologies.
+			} \\
+		} \\
+		% Position #2
+		\experienceentry{%
+			Backend Engineer%
+		}{%
+			Feb 2023 - Jun 2023%
+		}{%
+			Procter \& Gamble%
+		}{%
+			Boston, MA%
+		}{%
+			\employmententryresult{%
+				Developed a library for deploying GraphQL servers using declarative schemas.
+			} \\
+			\employmententryresult{%
+				Designed and implemented a cloud-native solution for field-level access control.
+			} \\
+			\employmententryresult{
+				Implemented automated CI/CD workflows for verifying and publishing code artifacts.
+			} \\
+		} \\
+		% Position #3
+		\experienceentry{%
+			Fullstack Engineer%
+		}{%
+			Jun 2022 - Feb 2023%
+		}{%
+			Procter \& Gamble%
+		}{%
+			Boston, MA%
+		}{%
+			\employmententryresult{%
+				Implemented a development workflow for viewing and unit testing UI components.
+			} \\
+			\employmententryresult{%
+				Implemented core business logic features across multiple views and API routes.
+			} \\
+			\employmententryresult{
+				Designed a standard process for preventing data loss when migrating the database.
+			} \\
+		} \\
+	\end{tabularx}
+}
+
+\newcommand{\volunteering}{%
+	\section*{Volunteering}
+	\begin{tabularx}{0.975\textwidth}{X r}
+		% Position #1
+		\experienceentry{Robotics Teaching Assistant}{Jan 2024 - Present}{Somerville Public Schools}{Somerville, MA}{%
+			\employmententryresult{%
+				Review instructor-provided lesson plans ahead of class.
+			} \\
+			\employmententryresult{%
+				Assist students with their designs and building instructions during lab sessions.
+			} \\
+			\employmententryresult{
+				Provide language support for students who do not speak or struggle with English.
+			} \\
+		} \\
+		% Position #2
+		\experienceentry{Academic Support Tutor}{Oct 2023 - Present}{Somerville Public Schools}{Somerville, MA}{%
+			\employmententryresult{%
+				Meet weekly with at-risk students to provide semester-long tutoring and counceling.
+			} \\
+			\employmententryresult{%
+				Develop student workplans by consulting with academic and administrative staff.
+			} \\
+			\employmententryresult{
+				Assist in academic support classes as a tutor in math, science, and writing.
+			} \\
+		} \\
+	\end{tabularx}
+}
+
+\newcommand{\experience}{%
+    \begin{minipage}[c][0.85\textheight][t]{0.69\textwidth}
+	\education
+	\employment
+	\volunteering 
+    \end{minipage}
+}
+
+% Skills
+\newcommand{\skillset}[3][1.2em]{%
+	\section*{#2}
+	\begin{tabularx}{0.975\textwidth}{%
+		>{\raggedleft\arraybackslash}p{#1} X
+	}
+		#3
+	\end{tabularx}
+}
+
+\newcommand{\pngicon}[2][1.1em]{%
+	\includegraphics[width=#1]{#2}
+}
+
+\newcommand{\svgicon}[2][1.1em]{%
+	\includesvg[width=#1]{#2}
+}
+
+\newcommand{\svgiconalt}[2][1ex]{%
+	\includesvg[height=#1]{#2}
+}
+
+\newcommand{\programming}{%
+	\skillset{Programming}{%
+		\svgiconalt{go} & Go \\
+		\faJava & Java \\
+		\svgicon{julia} & Julia \\
+		\TeX & LaTeX \\
+		\faPython & Python \\
+		\svgicon{typescript} & TypeScript
+	}
+}
+
+\newcommand{\technologies}{%
+	\skillset{Technologies}{%
+		\faDocker & Docker \\
+		\pngicon{google-cloud-platform} & Google Cloud Platform \\
+		\svgicon{grafana} & Grafana \\
+		\svgicon{graphql} & GraphQL \\
+		\svgicon{helm} & Helm \\
+		\pngicon{hugo} & Hugo \\
+		\svgicon{jaeger} & Jaeger \\
+		\svgicon{kubernetes} & Kubernetes \\
+		\pngicon{nextjs} & Next.js \\
+		\faNodeJs & Node.js \\
+		\pngicon{oauth} & OAuth 2.0 \\
+		\pngicon{oidc} & OpenID Connect \\
+		\svgicon{opa} & Open Policy Agent \\
+		\svgicon{opentelemetry} & OpenTelemetry \\
+		\svgicon{postgresql} & PostgreSQL \\
+		\svgicon{prometheus} & Prometheus \\
+		\svgicon{terraform} & Terraform \\
+	}
+}
+
+\newcommand{\svgiconflag}[2][1.6em]{%
+	\svgicon[#1]{#2}
+}
+
+\newcommand{\languages}[1][-1.2em]{%
+	\skillset{Languages}{%
+		\svgiconflag{usa} & English (native) \\[#1]
+		\svgiconflag{mexico} & Spanish (native) \\[#1]
+		\svgiconflag{france} & French (advanced) \\[#1]
+		\svgiconflag{china} & Chinese (intermediate) \\[-1.4em]
+	}
+}
+
+\newcommand{\hobbies}{%
+	\skillset{Hobbies}{%
+		\faBiking & Biking \\
+		\faSwimmer & Swimming \\
+		\faBooks & Reading \\
+		\faHeadSideBrain & Philosophy \\
+		\faPaintBrush & Digital Art \\
+		\faMusic & Music Production \\
+	}
+}
+ 
+\newcommand{\skills}{%
+	\begin{minipage}[c][0.85\textheight][t]{0.272\textwidth}
+		\programming
+		\technologies
+		\languages
+		\hobbies
+	\end{minipage}
+}
+
+\newcommand{\body}{%
+	\begin{minipage}[t][0.86\textheight][t]{0.95\textwidth}    
+		\onehalfspacing
+		\experience
+		\hfill
+		\skills
+	\end{minipage}
+}
+
+\pagenumbering{gobble}
+\begin{document}
+\centering
+\header
+\body
+\footer
+\end{document}
